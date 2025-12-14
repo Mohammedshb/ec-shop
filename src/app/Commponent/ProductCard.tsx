@@ -1,5 +1,4 @@
 
-
 'use client'
 
 import { ProductType } from '@/types'
@@ -7,6 +6,8 @@ import { ShoppingCart } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
+import useCartStore from '../stores/cartStore'
+import { toast} from 'react-toastify'
 
 const ProductCard = ({ product }: { product: ProductType }) => {
   const [productTypes, setProductTypes] = useState({
@@ -14,11 +15,13 @@ const ProductCard = ({ product }: { product: ProductType }) => {
     colors: product.colors[0],
   })
 
+  const { addToCart } = useCartStore()
+
   const handleProductType = ({
     type,
     value,
   }: {
-    type: 'size' | 'colors'
+    type: 'sizes' | 'colors'
     value: string
   }) => {
     setProductTypes((prev) => ({
@@ -26,6 +29,18 @@ const ProductCard = ({ product }: { product: ProductType }) => {
       [type]: value,
     }))
   }
+
+  const handleAddToCart = () => {
+    addToCart({
+      ...product,
+      quantity: 1,
+      selectedSize: productTypes.sizes,
+      selectedColor: productTypes.colors,
+    });
+
+    toast.success("Product added to cart")
+
+  };
 
   return (
     <div className="shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
@@ -43,8 +58,8 @@ const ProductCard = ({ product }: { product: ProductType }) => {
 
       {/* PRODUCT DETAIL */}
       <div className="flex flex-col gap-4 p-4">
-        <h1 className="font-medium ">{product.name}</h1>
-        <p className="text-sm text-gray-500 cursor-pointer">
+        <h1 className="font-medium">{product.name}</h1>
+        <p className="text-sm text-gray-500">
           {product.shortDescription}
         </p>
 
@@ -54,11 +69,12 @@ const ProductCard = ({ product }: { product: ProductType }) => {
           <div className="flex flex-col gap-1">
             <span className="text-gray-500">Sizes:</span>
             <select
-              name="size"
-              id="size"
               className="ring ring-gray-300 rounded-md px-2 py-1"
               onChange={(e) =>
-                handleProductType({ type: 'size', value: e.target.value })
+                handleProductType({
+                  type: 'sizes',
+                  value: e.target.value,
+                })
               }
               value={productTypes.sizes}
             >
@@ -77,13 +93,16 @@ const ProductCard = ({ product }: { product: ProductType }) => {
               {product.colors.map((color) => (
                 <div
                   key={color}
-                  className={`cursor-pointer border-1 rounded-full p-[1.2px] ${
+                  className={`cursor-pointer border rounded-full p-[1.2px] ${
                     productTypes.colors === color
                       ? 'border-gray-400'
                       : 'border-gray-200'
                   }`}
                   onClick={() =>
-                    handleProductType({ type: 'colors', value: color })
+                    handleProductType({
+                      type: 'colors',
+                      value: color,
+                    })
                   }
                 >
                   <div
@@ -98,14 +117,16 @@ const ProductCard = ({ product }: { product: ProductType }) => {
 
         {/* PRICE & ADD TO CART */}
         <div className="flex items-center justify-between mt-2">
-          <p className="font-medium text-lg">${product.price.toFixed(2)}</p>
+          <p className="font-medium text-lg">
+            ${product.price.toFixed(2)}
+          </p>
           <button
+            onClick={handleAddToCart}
             className="
               px-4 py-2 rounded-xl text-white font-semibold flex items-center gap-2
               bg-gradient-to-r from-black to-red-600
               transition-transform duration-300
               hover:scale-110
-              animate-pulse
             "
           >
             <ShoppingCart className="w-4 h-4" />
