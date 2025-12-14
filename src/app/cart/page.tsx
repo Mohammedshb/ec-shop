@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import PaymentForm from '../Commponent/PaymentForm'
 import Image from 'next/image'
+import ShippingForm from '../Commponent/ShippingForm'
 
 const steps = [
   {
@@ -147,7 +148,7 @@ const CartPage = () => {
                 </div>
              ))
           ) : activeStep === 2 ? (
-            <ShippingForm />
+            <ShippingForm setShippingForm={setShippingForm}/>
           ) : activeStep === 3 && shippingForm ? (
             <PaymentForm />
           ) : (
@@ -155,7 +156,7 @@ const CartPage = () => {
           )}
         </div>
         {/* DETAILS */}
-        <div className="w-full lg:w-5/12  shadow-lg border-1  border-gray-100 p-8 rounded-lg flex flex-col gap-8">
+        <div className="w-full lg:w-5/12  shadow-lg border-1  border-gray-100 p-8 rounded-lg flex flex-col gap-8 h-max">
           <h1 className="font-semibold">Cart Details </h1>
           <div className="flex flex-col gap-4">
             <div className="flex justify-between text-sm ">
