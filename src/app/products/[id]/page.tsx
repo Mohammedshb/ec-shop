@@ -18,6 +18,15 @@ const product: ProductType = {
     purple: '/products/1p.png',
     green: '/products/1gr.png',
   },
+};
+
+export const generateMetadata = async ({params}:{params:{id:string}})=>{
+//   TODO:GET THE PRODUCT FROM DB
+//   TEMPORARY
+    return {
+        title:product.name,
+        describe: product.description
+    }
 }
 
 const ProductPage = async ({
