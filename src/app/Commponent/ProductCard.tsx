@@ -126,7 +126,7 @@ const ProductCard = ({ product }: { product: ProductType }) => {
               px-4 py-2 rounded-xl text-white font-semibold flex items-center gap-2
               bg-gradient-to-r from-black to-red-600
               transition-transform duration-300
-              hover:scale-110
+              hover:scale-110 animate-pulse
             "
           >
             <ShoppingCart className="w-4 h-4" />
