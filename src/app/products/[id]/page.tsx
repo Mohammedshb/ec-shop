@@ -1,3 +1,5 @@
+
+
 // import ProductInteractions from '@/app/Commponent/ProductInteraction'
 // import { ProductType } from '@/types'
 // import Image from 'next/image'
@@ -18,28 +20,38 @@
 //     purple: '/products/1p.png',
 //     green: '/products/1gr.png',
 //   },
-// };
-
-// export const generateMetadata = async ({params}:{params:{id:string}})=>{
-// //   TODO:GET THE PRODUCT FROM DB
-// //   TEMPORARY
-//     return {
-//         title:product.name,
-//         describe: product.description
-//     }
 // }
 
-// const ProductPage = async ({
-//   params,
-//   searchParams,
-// }: {
-//   params: Promise<{ id: string }>
-//   searchParams: Promise<{ color: string; size: string }>
-// }) => {
-//   const { size, color } = await searchParams
+// // ✅ النوع الصحيح لصفحة ديناميك
+// interface PageProps {
+//   params: {
+//     id: string
+//   }
+//   searchParams: {
+//     color?: string
+//     size?: string
+//   }
+// }
 
-//   const selectedSize = size || (product.sizes[0] as string)
-//   const selectedColor = color || (product.colors[0] as string)
+// // ✅ Metadata (بدون أخطاء typing)
+// export const generateMetadata = async ({
+//   params,
+// }: {
+//   params: { id: string }
+// }) => {
+//   return {
+//     title: product.name,
+//     description: product.description,
+//   }
+// }
+
+// // ✅ الصفحة
+// const ProductPage = async ({ params, searchParams }: PageProps) => {
+//   const { id } = params
+//   const { size, color } = searchParams
+
+//   const selectedSize = size || product.sizes[0]
+//   const selectedColor = color || product.colors[0]
 
 //   return (
 //     <div className="flex flex-col gap-4 lg:flex-row md:gap-12 mt-12">
@@ -52,21 +64,26 @@
 //           className="object-contain rounded-md"
 //         />
 //       </div>
+
 //       {/* DETAILS */}
-//       <div className="w-full lg:w-7/12  flex flex-col gap-4">
+//       <div className="w-full lg:w-7/12 flex flex-col gap-4">
 //         <h1 className="text-2xl font-medium">{product.name}</h1>
 //         <p className="text-gray-500">{product.description}</p>
-//         <h2 className="text-2xl font-semibold">${product.price.toFixed(2)}</h2>
+//         <h2 className="text-2xl font-semibold">
+//           ${product.price.toFixed(2)}
+//         </h2>
+
 //         <ProductInteractions
 //           product={product}
 //           selectedSize={selectedSize}
 //           selectedColor={selectedColor}
 //         />
+
 //         {/* CARD INFO */}
 //         <div className="flex items-center gap-2 mt-4">
 //           <Image
 //             src="/Klarna.png"
-//             alt="Klaran"
+//             alt="Klarna"
 //             width={50}
 //             height={25}
 //             className="rounded-md"
@@ -80,22 +97,27 @@
 //           />
 //           <Image
 //             src="/stripe.png"
-//             alt="strip"
+//             alt="stripe"
 //             width={50}
 //             height={25}
 //             className="rounded-md"
 //           />
+
 //           <p className="text-gray-500 text-sm">
-//             By clicking Pay Now , you agree to our {''}
+//             By clicking Pay Now, you agree to our{' '}
 //             <span className="underline hover:text-black">
 //               Terms & Conditions
-//             </span>
-//             {''}
+//             </span>{' '}
 //             and{' '}
-//             <span className="underline hover:text-black">Privacy Policy</span>.
-//             You authorize us to charge your selected payment method for the
-//             total amount shown. All sales are subject to our return and {''}
-//             <span className="underline hover:text-black">Refund Policies</span>
+//             <span className="underline hover:text-black">
+//               Privacy Policy
+//             </span>
+//             . You authorize us to charge your selected payment method for the
+//             total amount shown. All sales are subject to our return and{' '}
+//             <span className="underline hover:text-black">
+//               Refund Policies
+//             </span>
+//             .
 //           </p>
 //         </div>
 //       </div>
@@ -105,7 +127,6 @@
 
 // export default ProductPage
 
-// //
 
 
 import ProductInteractions from '@/app/Commponent/ProductInteraction'
@@ -130,33 +151,21 @@ const product: ProductType = {
   },
 }
 
-// ✅ النوع الصحيح لصفحة ديناميك
-interface PageProps {
-  params: {
-    id: string
-  }
-  searchParams: {
-    color?: string
-    size?: string
-  }
-}
-
-// ✅ Metadata (بدون أخطاء typing)
-export const generateMetadata = async ({
-  params,
-}: {
-  params: { id: string }
-}) => {
+// ✅ Metadata (بدون typing)
+export async function generateMetadata({ params }: any) {
   return {
     title: product.name,
     description: product.description,
   }
 }
 
-// ✅ الصفحة
-const ProductPage = async ({ params, searchParams }: PageProps) => {
-  const { id } = params
-  const { size, color } = searchParams
+// ✅ Page (متوافق مع Vercel)
+export default async function ProductPage({
+  params,
+  searchParams,
+}: any) {
+  const { id } = await params
+  const { size, color } = await searchParams
 
   const selectedSize = size || product.sizes[0]
   const selectedColor = color || product.colors[0]
@@ -189,27 +198,9 @@ const ProductPage = async ({ params, searchParams }: PageProps) => {
 
         {/* CARD INFO */}
         <div className="flex items-center gap-2 mt-4">
-          <Image
-            src="/Klarna.png"
-            alt="Klarna"
-            width={50}
-            height={25}
-            className="rounded-md"
-          />
-          <Image
-            src="/cards.png"
-            alt="card"
-            width={50}
-            height={25}
-            className="rounded-md"
-          />
-          <Image
-            src="/stripe.png"
-            alt="stripe"
-            width={50}
-            height={25}
-            className="rounded-md"
-          />
+          <Image src="/Klarna.png" alt="Klarna" width={50} height={25} />
+          <Image src="/cards.png" alt="card" width={50} height={25} />
+          <Image src="/stripe.png" alt="stripe" width={50} height={25} />
 
           <p className="text-gray-500 text-sm">
             By clicking Pay Now, you agree to our{' '}
@@ -220,11 +211,6 @@ const ProductPage = async ({ params, searchParams }: PageProps) => {
             <span className="underline hover:text-black">
               Privacy Policy
             </span>
-            . You authorize us to charge your selected payment method for the
-            total amount shown. All sales are subject to our return and{' '}
-            <span className="underline hover:text-black">
-              Refund Policies
-            </span>
             .
           </p>
         </div>
@@ -232,5 +218,3 @@ const ProductPage = async ({ params, searchParams }: PageProps) => {
     </div>
   )
 }
-
-export default ProductPage
